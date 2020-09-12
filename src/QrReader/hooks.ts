@@ -1,39 +1,8 @@
 import { useEffect } from 'react';
-import { BrowserQRCodeReader, Result } from '@zxing/library';
+import { BrowserQRCodeReader } from '@zxing/library';
 
 import { getDeviceId } from './utils';
-
-export type CodeReaderError =
-  | 'FormatException'
-  | 'NotFoundException'
-  | 'ChecksumException'
-  | 'NoMediaDevicesSupportException';
-
-export type UseQrReaderHook = (props: UseQrReaderHookProps) => void;
-export type OnResultFunction = (
-  result?: Result,
-  error?: CodeReaderError,
-  codeReader?: BrowserQRCodeReader
-) => void;
-
-export type UseQrReaderHookProps = {
-  /**
-   * The camera to use, especify 'user' for front camera or 'environment' for back camera.
-   */
-  facingMode?: VideoFacingModeEnum;
-  /**
-   * Callback for retrieving the result
-   */
-  onResult?: OnResultFunction;
-  /**
-   * Property that represents the scan period
-   */
-  scanDelay?: number;
-  /**
-   * Property that represents the ID of the video element
-   */
-  videoId?: string;
-};
+import { UseQrReaderHook, CodeReaderError } from '../types';
 
 // TODO: implement dependencies in a way that video stream doesn't flashback
 export const useQrReader: UseQrReaderHook = ({
