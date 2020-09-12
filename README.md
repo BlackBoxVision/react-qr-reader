@@ -10,12 +10,12 @@
 
 - [Use Case](#use-case)
 - [Compatibility](#compatibility)
-- [Supporting Older Browsers](#supporting-older-browsers)
 - [Installation](#installation)
   - [NPM](#npm)
   - [YARN](#yarn)
 - [Example Usage](#example-usage)
 - [QrReader API](#component-api)
+- [Browser support](#browser-support)
 - [Issues](#issues)
 - [Contributing](#contributing)
 - [License](#license)
@@ -34,24 +34,6 @@ This component has been tested in the following browsers:
 
 Since this library does internal use of hooks you need `React >= 16.8.0`.
 
-## Supporting Older Browsers
-
-This library uses the `WebRTC APIs` supported in [modern browsers](https://caniuse.com/#search=webrtc).
-
-If you're supporting older browers you'll need to perform the following steps:
-
-1. Install `webrtc-adapter` library:
-
-```bash
-npm i webrtc-adapter
-```
-
-2. Import the shim from the root of your app:
-
-```javascript
-import 'webrtc-adapter';
-```
-
 ## Installation
 
 You can install this library via NPM or YARN.
@@ -59,13 +41,13 @@ You can install this library via NPM or YARN.
 ### NPM
 
 ```bash
-npm i @blackbox-vision/react-qr-reader
+npm i @blackbox-vision/react-qr-reader @zxing/library
 ```
 
 ### YARN
 
 ```bash
-yarn add @blackbox-vision/react-qr-reader
+yarn add @blackbox-vision/react-qr-reader @zxing/library
 ```
 
 ## Example Usage
@@ -112,6 +94,10 @@ The `QrReader` component has the following props:
 | ViewFinder | component               | none          | ViewFinder component to rendering over the video element                                          |
 | style      | a valid React style     | none          | Styling for the container element. **Warning** The preview will always keep its 1:1 aspect ratio. |
 | className  | string                  | none          | ClassName for the container element.                                                              |
+
+## Browser Support
+
+If you need to support older browsers, checkout [this guide](https://github.com/zxing-js/library#browser-support) in how to make it compatible with legacy ones
 
 ## Issues
 
