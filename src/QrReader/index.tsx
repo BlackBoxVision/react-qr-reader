@@ -2,7 +2,7 @@ import styles from './styles';
 
 import * as React from 'react';
 
-import { useQrReader, DebugFunction, OnResultFunction } from './hooks';
+import { useQrReader, OnResultFunction } from './hooks';
 
 export type QrReaderProps = {
   /**

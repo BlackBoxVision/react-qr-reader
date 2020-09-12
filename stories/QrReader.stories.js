@@ -85,10 +85,6 @@ const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }) => {
         <QrReader
           facingMode={facingMode}
           ViewFinder={ViewFinder}
-          debug={(data, type) => {
-            console.info('type', type);
-            console.info('data', data);
-          }}
           onResult={(result, error) => {
             if (result) {
               setData(result);
