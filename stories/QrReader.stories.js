@@ -83,14 +83,21 @@ const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }) => {
       )}
       {on && (
         <QrReader
+          facingMode={facingMode}
+          ViewFinder={ViewFinder}
           debug={(data, type) => {
             console.info('type', type);
             console.info('data', data);
           }}
-          onScan={setData}
-          onError={setError}
-          facingMode={facingMode}
-          ViewFinder={ViewFinder}
+          onResult={(result, error) => {
+            if (result) {
+              setData(result);
+            }
+
+            if (error) {
+              setError(error);
+            }
+          }}
         />
       )}
       <p>El valor escaneado es: {JSON.stringify(data, null, 2)}</p>
