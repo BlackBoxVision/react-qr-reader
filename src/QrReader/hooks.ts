@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { BrowserQRCodeReader, Result } from '@zxing/library';
 
+import { getDeviceId } from './utils';
+
 export type UseQrReaderHook = (props: UseQrReaderHookProps) => void;
 export type OnResultFunction = (result: Result, error: Error) => void;
 
@@ -39,9 +41,8 @@ export const useQrReader: UseQrReaderHook = ({
       }
     }
 
-    codeReader.getVideoInputDevices().then((videoInputDevices) => {
-      // TODO: get device camera by facing-mode
-      const deviceId = videoInputDevices[0].deviceId;
+    codeReader.getVideoInputDevices().then(async (videoInputDevices) => {
+      const deviceId = await getDeviceId(videoInputDevices, facingMode);
 
       codeReader.decodeFromInputVideoDeviceContinuously(
         deviceId,
