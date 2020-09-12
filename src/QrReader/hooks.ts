@@ -23,6 +23,7 @@ export type UseQrReaderHookProps = {
   videoId?: string;
 };
 
+// TODO: improve hook to avoid `codeReader` instance regeneration and re-scanning to avoid constant video-flashing when some prop change
 export const useQrReader: UseQrReaderHook = ({
   facingMode,
   scanDelay,
@@ -57,5 +58,5 @@ export const useQrReader: UseQrReaderHook = ({
       codeReader.stopContinuousDecode();
       codeReader.stopAsyncDecode();
     };
-  }, [scanDelay, videoId, facingMode, onResult]);
+  }, []);
 };

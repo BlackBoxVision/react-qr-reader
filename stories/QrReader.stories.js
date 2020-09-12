@@ -90,7 +90,7 @@ const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }) => {
               setData(result);
             }
 
-            if (error) {
+            if (error && error.name !== 'NotFoundException') {
               setError(error);
             }
           }}

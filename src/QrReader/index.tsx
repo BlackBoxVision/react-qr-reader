@@ -35,36 +35,38 @@ export type QrReaderProps = {
   videoId?: string;
 };
 
-export const QrReader: React.FunctionComponent<QrReaderProps> = ({
-  facingMode,
-  ViewFinder,
-  className,
-  scanDelay,
-  onResult,
-  videoId,
-  style,
-}: QrReaderProps) => {
-  const videoStyle = {
-    ...styles.videoPreview,
-    transform: facingMode === 'user' && 'scaleX(-1)',
-  } as any;
-
-  useQrReader({
+export const QrReader: React.FunctionComponent<QrReaderProps> = React.memo(
+  ({
     facingMode,
+    ViewFinder,
+    className,
     scanDelay,
     onResult,
     videoId,
-  });
+    style,
+  }: QrReaderProps) => {
+    const videoStyle = {
+      ...styles.videoPreview,
+      transform: facingMode === 'user' && 'scaleX(-1)',
+    } as any;
 
-  return (
-    <section className={className} style={style}>
-      <section style={styles.container as any}>
-        {!!ViewFinder && <ViewFinder />}
-        <video id={videoId} muted style={videoStyle} />
+    useQrReader({
+      facingMode,
+      scanDelay,
+      onResult,
+      videoId,
+    });
+
+    return (
+      <section className={className} style={style}>
+        <section style={styles.container as any}>
+          {!!ViewFinder && <ViewFinder />}
+          <video id={videoId} muted style={videoStyle} />
+        </section>
       </section>
-    </section>
-  );
-};
+    );
+  }
+);
 
 QrReader.displayName = 'QrReader';
 QrReader.defaultProps = {
