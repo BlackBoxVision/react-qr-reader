@@ -3,8 +3,18 @@ import { BrowserQRCodeReader, Result } from '@zxing/library';
 
 import { getDeviceId } from './utils';
 
+export type CodeReaderError =
+  | 'FormatException'
+  | 'NotFoundException'
+  | 'ChecksumException'
+  | 'NoMediaDevicesSupportException';
+
 export type UseQrReaderHook = (props: UseQrReaderHookProps) => void;
-export type OnResultFunction = (result: Result, error: Error) => void;
+export type OnResultFunction = (
+  result?: Result,
+  error?: CodeReaderError,
+  codeReader?: BrowserQRCodeReader
+) => void;
 
 export type UseQrReaderHookProps = {
   /**
@@ -25,7 +35,7 @@ export type UseQrReaderHookProps = {
   videoId?: string;
 };
 
-// TODO: improve hook to avoid `codeReader` instance regeneration and re-scanning to avoid constant video-flashing when some prop change
+// TODO: implement dependencies in a way that video stream doesn't flashback
 export const useQrReader: UseQrReaderHook = ({
   facingMode,
   scanDelay,
@@ -37,7 +47,7 @@ export const useQrReader: UseQrReaderHook = ({
 
     if (!codeReader.isMediaDevicesSuported) {
       if (typeof onResult === 'function') {
-        onResult(null, new Error('media devices is not supported'));
+        onResult(null, 'NoMediaDevicesSupportException');
       }
     }
 
@@ -48,8 +58,10 @@ export const useQrReader: UseQrReaderHook = ({
         deviceId,
         videoId,
         (result, error) => {
+          const exception = (error && (error.name as CodeReaderError)) || null;
+
           if (typeof onResult === 'function') {
-            onResult(result, error);
+            onResult(result, exception, codeReader);
           }
         }
       );
