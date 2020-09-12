@@ -82,6 +82,9 @@
         "@pika/plugin-standard-pkg"
       ],
       [
+        "@pika/plugin-build-node"
+      ],
+      [
         "@pika/plugin-build-web"
       ],
       [
