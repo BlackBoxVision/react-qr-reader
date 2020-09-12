@@ -1,7 +1,8 @@
 export const getDeviceId = async (
-  videoInputDevices: MediaDeviceInfo[],
   facingMode: VideoFacingModeEnum
 ): Promise<string> => {
+  let videoInputDevices = await navigator.mediaDevices.enumerateDevices();
+
   videoInputDevices = videoInputDevices.filter(
     (deviceInfo: MediaDeviceInfo) => deviceInfo.kind === 'videoinput'
   );
