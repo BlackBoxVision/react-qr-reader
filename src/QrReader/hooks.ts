@@ -1,10 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserQRCodeReader, Result } from '@zxing/library';
 
-export type DebugDataTypes = 'raw_data' | 'load' | 'value' | 'error';
-
 export type UseQrReaderHook = (props: UseQrReaderHookProps) => void;
-export type DebugFunction = (data: any, type: DebugDataTypes) => void;
 export type OnResultFunction = (result: Result, error: Error) => void;
 
 export type UseQrReaderHookProps = {
@@ -17,18 +14,23 @@ export type UseQrReaderHookProps = {
    */
   onResult?: OnResultFunction;
   /**
-   * It enables debug logs to see what's going on with the QrReader
+   * Property that represents the scan period
    */
-  debug?: DebugFunction;
+  scanDelay?: number;
+  /**
+   * Property that represents the ID of the video element
+   */
+  videoId?: string;
 };
 
 export const useQrReader: UseQrReaderHook = ({
   facingMode,
+  scanDelay,
   onResult,
-  debug,
+  videoId,
 }) => {
   useEffect(() => {
-    const codeReader = new BrowserQRCodeReader(500);
+    const codeReader = new BrowserQRCodeReader(scanDelay);
 
     if (!codeReader.isMediaDevicesSuported) {
       if (typeof onResult === 'function') {
@@ -37,11 +39,12 @@ export const useQrReader: UseQrReaderHook = ({
     }
 
     codeReader.getVideoInputDevices().then((videoInputDevices) => {
+      // TODO: get device camera by facing-mode
       const deviceId = videoInputDevices[0].deviceId;
 
       codeReader.decodeFromInputVideoDeviceContinuously(
         deviceId,
-        'video',
+        videoId,
         (result, error) => {
           if (typeof onResult === 'function') {
             onResult(result, error);
@@ -54,5 +57,5 @@ export const useQrReader: UseQrReaderHook = ({
       codeReader.stopContinuousDecode();
       codeReader.stopAsyncDecode();
     };
-  }, []);
+  }, [scanDelay, videoId, facingMode, onResult]);
 };

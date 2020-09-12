@@ -22,22 +22,27 @@ export type QrReaderProps = {
    */
   style?: any;
   /**
-   * Function that takes a context and gives you the choice to log
-   */
-  debug?: DebugFunction;
-  /**
    * Property that represents the view finder component
    */
-  ViewFinder: (props: any) => React.ReactElement<any, any> | null;
+  ViewFinder?: (props: any) => React.ReactElement<any, any> | null;
+  /**
+   * Property that represents the scan period
+   */
+  scanDelay?: number;
+  /**
+   * Property that represents the ID of the video element
+   */
+  videoId?: string;
 };
 
 export const QrReader: React.FunctionComponent<QrReaderProps> = ({
   facingMode,
   ViewFinder,
   className,
+  scanDelay,
   onResult,
+  videoId,
   style,
-  debug,
 }: QrReaderProps) => {
   const videoStyle = {
     ...styles.videoPreview,
@@ -46,15 +51,16 @@ export const QrReader: React.FunctionComponent<QrReaderProps> = ({
 
   useQrReader({
     facingMode,
+    scanDelay,
     onResult,
-    debug,
+    videoId,
   });
 
   return (
     <section className={className} style={style}>
       <section style={styles.container as any}>
         {!!ViewFinder && <ViewFinder />}
-        <video id="video" muted style={videoStyle} />
+        <video id={videoId} muted style={videoStyle} />
       </section>
     </section>
   );
@@ -63,6 +69,8 @@ export const QrReader: React.FunctionComponent<QrReaderProps> = ({
 QrReader.displayName = 'QrReader';
 QrReader.defaultProps = {
   facingMode: 'environment',
+  videoId: 'video',
+  scanDelay: 500,
 };
 
 export default QrReader;
