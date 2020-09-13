@@ -53,7 +53,7 @@ const ViewFinder = () => (
 const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }) => {
   const [facingMode, setFacingMode] = useState('user');
   const [delay, setDelay] = useState(500);
-  const [error, setError] = useState({});
+  const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const [on, setOn] = useState(true);
 
@@ -97,7 +97,7 @@ const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }) => {
         />
       )}
       <p>El valor escaneado es: {JSON.stringify(data, null, 2)}</p>
-      <p>El Error es: {error.message}</p>
+      <p>El Error es: {JSON.stringify(error)}</p>
     </div>
   );
 };

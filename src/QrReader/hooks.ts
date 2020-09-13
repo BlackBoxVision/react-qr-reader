@@ -20,21 +20,23 @@ export const useQrReader: UseQrReaderHook = ({
       }
     }
 
-    codeReader.getVideoInputDevices().then(async (videoInputDevices) => {
-      const deviceId = await getDeviceId(videoInputDevices, facingMode);
-
-      codeReader.decodeFromInputVideoDeviceContinuously(
-        deviceId,
-        videoId,
-        (result, error) => {
+    codeReader
+      .listVideoInputDevices()
+      .then((videoInputDevices) => getDeviceId(videoInputDevices, facingMode))
+      .then((deviceId) =>
+        codeReader.decodeFromVideoDevice(deviceId, videoId, (result, error) => {
           const exception = (error && (error.name as CodeReaderError)) || null;
 
           if (typeof onResult === 'function') {
             onResult(result, exception, codeReader);
           }
+        })
+      )
+      .catch(() => {
+        if (typeof onResult === 'function') {
+          onResult(null, 'NoDeviceFoundException', codeReader);
         }
-      );
-    });
+      });
 
     return () => {
       codeReader.stopContinuousDecode();

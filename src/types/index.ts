@@ -35,6 +35,7 @@ export type CodeReaderError =
   | 'FormatException'
   | 'NotFoundException'
   | 'ChecksumException'
+  | 'NoDeviceFoundException'
   | 'NoMediaDevicesSupportException';
 
 export type UseQrReaderHook = (props: UseQrReaderHookProps) => void;
