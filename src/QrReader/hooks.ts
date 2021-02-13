@@ -1,29 +1,34 @@
-import { useEffect } from 'react';
-import { BrowserQRCodeReader } from '@zxing/library';
+import { MutableRefObject, useEffect, useRef } from 'react';
+import { BrowserQRCodeReader, IScannerControls } from '@zxing/browser';
 
-import { getDeviceId } from './utils';
 import { UseQrReaderHook, CodeReaderError } from '../types';
 
-// TODO: implement dependencies in a way that video stream doesn't flashback
+import { getDeviceId, isMediaDevicesSupported } from './utils';
+
 export const useQrReader: UseQrReaderHook = ({
   facingMode,
   scanDelay,
   onResult,
   videoId,
 }) => {
-  useEffect(() => {
-    const codeReader = new BrowserQRCodeReader(scanDelay);
+  const controlsRef: MutableRefObject<IScannerControls> = useRef(null);
 
-    if (!codeReader.isMediaDevicesSuported) {
+  useEffect(() => {
+    const codeReader = new BrowserQRCodeReader(null, {
+      delayBetweenScanAttempts: scanDelay,
+    });
+
+    if (!isMediaDevicesSupported()) {
       if (typeof onResult === 'function') {
         onResult(null, 'NoMediaDevicesSupportException');
       }
     }
 
-    codeReader
-      .listVideoInputDevices()
-      .then((videoInputDevices) => getDeviceId(videoInputDevices, facingMode))
-      .then((deviceId) =>
+    BrowserQRCodeReader.listVideoInputDevices()
+      .then((videoInputDevices: MediaDeviceInfo[]) =>
+        getDeviceId(videoInputDevices, facingMode)
+      )
+      .then((deviceId: string) =>
         codeReader.decodeFromVideoDevice(deviceId, videoId, (result, error) => {
           const exception = (error && (error.name as CodeReaderError)) || null;
 
@@ -32,15 +37,15 @@ export const useQrReader: UseQrReaderHook = ({
           }
         })
       )
-      .catch(() => {
+      .then((controls: IScannerControls) => (controlsRef.current = controls))
+      .catch((err: Error) => {
         if (typeof onResult === 'function') {
-          onResult(null, 'NoDeviceFoundException', codeReader);
+          onResult(null, err, codeReader);
         }
       });
 
     return () => {
-      codeReader.stopContinuousDecode();
-      codeReader.stopAsyncDecode();
+      controlsRef.current?.stop();
     };
   }, []);
 };

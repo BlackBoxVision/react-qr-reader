@@ -1,54 +1,57 @@
+import { Device } from 'types';
+
 export const getDeviceId = async (
   videoInputDevices: MediaDeviceInfo[],
   facingMode: VideoFacingModeEnum
 ): Promise<string> => {
-  videoInputDevices = videoInputDevices.filter(
-    (deviceInfo: MediaDeviceInfo) => deviceInfo.kind === 'videoinput'
-  );
+  const devices: Device[] = [];
 
-  if (videoInputDevices.length < 1) {
-    throw new Error('No video input devices found');
+  for (let videoInputDevice of videoInputDevices) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          deviceId: {
+            exact: videoInputDevice.deviceId,
+          },
+        },
+      });
+
+      const [track] = stream.getVideoTracks();
+
+      let settings: MediaTrackSettings = null;
+
+      if (!!track) {
+        settings = track.getSettings();
+        track.getCapabilities();
+
+        track.stop();
+      }
+
+      devices.push({
+        deviceId: videoInputDevice.deviceId,
+        facingMode: settings?.facingMode || facingMode,
+        hasStreamingSupport: true,
+      });
+    } catch (err) {
+      devices.push({
+        deviceId: videoInputDevice.deviceId,
+        facingMode: null,
+        hasStreamingSupport: false,
+      });
+    }
   }
 
-  const regex =
-    facingMode === 'environment'
-      ? /rear|back|environment/gi
-      : /front|user|face/gi;
-
-  const devices = await Promise.all(
-    videoInputDevices
-      .filter((videoDevice: MediaDeviceInfo) => regex.test(videoDevice.label))
-      .map(async (videoDevice: MediaDeviceInfo) => {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: { deviceId: { exact: videoDevice.deviceId } },
-          });
-
-          stream.getVideoTracks().forEach((track) => {
-            track.getCapabilities();
-            track.getSettings();
-          });
-
-          stream.getTracks().forEach((track) => track.stop());
-
-          return {
-            deviceId: videoDevice.deviceId,
-            streamError: false,
-          };
-        } catch (err) {
-          return {
-            deviceId: videoDevice.deviceId,
-            streamError: true,
-          };
-        }
-      })
+  const [device] = devices.filter(
+    (device) => device.hasStreamingSupport && device.facingMode === facingMode
   );
-
-  const [device] = devices.filter((device) => !device.streamError);
 
   if (!device) {
     throw new Error('No video input devices found');
   }
 
   return device.deviceId;
+};
+
+export const isMediaDevicesSupported = () => {
+  return typeof navigator !== 'undefined' && !!navigator.mediaDevices;
 };

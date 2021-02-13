@@ -41,14 +41,16 @@ You can install this library via NPM or YARN.
 ### NPM
 
 ```bash
-npm i @blackbox-vision/react-qr-reader @zxing/library
+npm i @blackbox-vision/react-qr-reader @zxing/browser @zxing/library
 ```
 
 ### YARN
 
 ```bash
-yarn add @blackbox-vision/react-qr-reader @zxing/library
+yarn add @blackbox-vision/react-qr-reader @zxing/browser @zxing/library
 ```
+
+// TODO: add info about polyfilling UserMedia API
 
 ## Example Usage
 

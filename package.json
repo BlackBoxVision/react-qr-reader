@@ -51,7 +51,8 @@
     "@types/react": "^16.9.49",
     "@typescript-eslint/eslint-plugin": "^4.1.0",
     "@typescript-eslint/parser": "^4.1.0",
-    "@zxing/library": "^0.17.1",
+    "@zxing/browser": "0.0.7",
+    "@zxing/library": "^0.18.3",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "eslint": "^7.9.0",
@@ -74,7 +75,8 @@
   "peerDependencies": {
     "react": "~16",
     "react-dom": "~16",
-    "@zxing/library": "^0.17.1"
+    "@zxing/browser": "0.0.7",
+    "@zxing/library": "^0.18.3"
   },
   "@pika/pack": {
     "pipeline": [

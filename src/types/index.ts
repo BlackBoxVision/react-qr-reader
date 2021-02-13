@@ -1,4 +1,5 @@
-import { BrowserQRCodeReader, Result } from '@zxing/library';
+import { BrowserQRCodeReader } from '@zxing/browser';
+import { Result } from '@zxing/library';
 
 export type QrReaderProps = {
   /**
@@ -36,7 +37,8 @@ export type CodeReaderError =
   | 'NotFoundException'
   | 'ChecksumException'
   | 'NoDeviceFoundException'
-  | 'NoMediaDevicesSupportException';
+  | 'NoMediaDevicesSupportException'
+  | Error;
 
 export type UseQrReaderHook = (props: UseQrReaderHookProps) => void;
 export type OnResultFunction = (
@@ -71,4 +73,19 @@ export type UseQrReaderHookProps = {
    * Property that represents the ID of the video element
    */
   videoId?: string;
+};
+
+export type Device = {
+  /**
+   * Property that represents the ID from video device
+   */
+  deviceId: string;
+  /**
+   * Property that represents which kind of camera is the device
+   */
+  facingMode: 'user' | 'environment' | string | null;
+  /**
+   * Property that represents if the camera supports streaming video
+   */
+  hasStreamingSupport: boolean;
 };
