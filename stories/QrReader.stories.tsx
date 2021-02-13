@@ -50,7 +50,7 @@ const ViewFinder = () => (
   </>
 );
 
-const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }) => {
+const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }: any) => {
   const [facingMode, setFacingMode] = useState('user');
   const [delay, setDelay] = useState(500);
   const [error, setError] = useState(null);
