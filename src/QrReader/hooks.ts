@@ -30,7 +30,8 @@ export const useQrReader: UseQrReaderHook = ({
       )
       .then((deviceId: string) =>
         codeReader.decodeFromVideoDevice(deviceId, videoId, (result, error) => {
-          const exception = (error && (error.name as CodeReaderError)) || null;
+          const exception =
+            (error && (error.name as CodeReaderError)) || error.name;
 
           if (typeof onResult === 'function') {
             onResult(result, exception, codeReader);
