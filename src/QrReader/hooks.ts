@@ -3,7 +3,7 @@ import { BrowserQRCodeReader, IScannerControls } from '@zxing/browser';
 
 import { UseQrReaderHook, CodeReaderError } from '../types';
 
-import { getDeviceId, isMediaDevicesSupported } from './utils';
+import * as BrowserHelpers from './utils';
 
 export const useQrReader: UseQrReaderHook = ({
   facingMode,
@@ -18,7 +18,7 @@ export const useQrReader: UseQrReaderHook = ({
       delayBetweenScanAttempts: scanDelay,
     });
 
-    if (!isMediaDevicesSupported()) {
+    if (!BrowserHelpers.isMediaDevicesSupported()) {
       if (typeof onResult === 'function') {
         onResult(null, 'NoMediaDevicesSupportException');
       }
@@ -26,7 +26,7 @@ export const useQrReader: UseQrReaderHook = ({
 
     BrowserQRCodeReader.listVideoInputDevices()
       .then((videoInputDevices: MediaDeviceInfo[]) =>
-        getDeviceId(videoInputDevices, facingMode)
+        BrowserHelpers.getDeviceId(videoInputDevices, facingMode)
       )
       .then((deviceId: string) =>
         codeReader.decodeFromVideoDevice(deviceId, videoId, (result, error) => {
