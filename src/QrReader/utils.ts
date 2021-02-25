@@ -16,6 +16,10 @@ export const getDeviceId = async (
         },
       });
 
+      if (!!stream) {
+        throw new Error('StreamNotFoundException');
+      }
+
       const [track] = stream.getVideoTracks();
 
       let settings: MediaTrackSettings = null;
