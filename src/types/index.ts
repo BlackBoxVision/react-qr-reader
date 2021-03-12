@@ -3,9 +3,9 @@ import { Result } from '@zxing/library';
 
 export type QrReaderProps = {
   /**
-   * The camera to use, especify 'user' for front camera or 'environment' for back camera.
+   * Media track constraints object, to specify which camera and capabilities to use
    */
-  facingMode: VideoFacingModeEnum;
+  constraints: MediaTrackConstraints;
   /**
    * ClassName for the container element.
    */
@@ -49,9 +49,9 @@ export type OnResultFunction = (
 
 export type UseQrReaderHookProps = {
   /**
-   * The camera to use, especify 'user' for front camera or 'environment' for back camera.
+   * Media constraints object, to specify which camera and capabilities to use
    */
-  facingMode?: VideoFacingModeEnum;
+  constraints?: MediaTrackConstraints;
   /**
    * Callback for retrieving the result
    */

@@ -22,17 +22,3 @@ export const isValidType = (value: any, name: string, type: string) => {
 
   return isValid;
 };
-
-export const isValidValue = (value: any, name: string, values: any[]) => {
-  const hasValue = values.find((v) => v === value);
-
-  if (!hasValue) {
-    console.warn(
-      `[ReactQrReader]: Expected "${name}" to have one of the following values: "${JSON.stringify(
-        values
-      )}".`
-    );
-  }
-
-  return hasValue;
-};

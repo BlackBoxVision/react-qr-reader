@@ -83,7 +83,9 @@ const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }: any) => {
       )}
       {on && (
         <QrReader
-          facingMode={facingMode as VideoFacingModeEnum}
+          constraints={{
+            facingMode,
+          }}
           ViewFinder={ViewFinder}
           onResult={(result, error) => {
             if (result) {

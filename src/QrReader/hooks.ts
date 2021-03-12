@@ -3,11 +3,11 @@ import { BrowserQRCodeReader, IScannerControls } from '@zxing/browser';
 
 import { UseQrReaderHook } from '../types';
 
-import { isMediaDevicesSupported, isValidType, isValidValue } from './utils';
+import { isMediaDevicesSupported, isValidType } from './utils';
 
 // TODO: add support for debug logs
 export const useQrReader: UseQrReaderHook = ({
-  facingMode,
+  constraints: video,
   scanDelay,
   onResult,
   videoId,
@@ -29,24 +29,9 @@ export const useQrReader: UseQrReaderHook = ({
       onResult(null, new Error(message), codeReader);
     }
 
-    if (
-      isValidType(facingMode, 'facingMode', 'string') &&
-      isValidValue(facingMode, 'facingMode', [
-        'user',
-        'left',
-        'right',
-        'environment',
-      ])
-    ) {
-      // TODO: add support for passing additional props to constraints
-      const constraints: MediaStreamConstraints = {
-        video: {
-          facingMode,
-        },
-      };
-
+    if (isValidType(video, 'constraints', 'object')) {
       codeReader
-        .decodeFromConstraints(constraints, videoId, (result, error) => {
+        .decodeFromConstraints({ video }, videoId, (result, error) => {
           if (isValidType(onResult, 'onResult', 'function')) {
             onResult(result, error, codeReader);
           }
