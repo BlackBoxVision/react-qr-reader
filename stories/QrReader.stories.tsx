@@ -52,7 +52,7 @@ const ViewFinder = () => (
 
 const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }: any) => {
   const [facingMode, setFacingMode] = useState('user');
-  const [delay, setDelay] = useState(500);
+  const [delay, setDelay] = useState<number | boolean>(500);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const [on, setOn] = useState(true);
@@ -75,7 +75,7 @@ const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }: any) => {
           <button onClick={() => setDelay(false)}>Disable Delay</button>
           <input
             type="number"
-            value={delay}
+            value={delay as number}
             placeholder="Delay in ms"
             onChange={(e) => setDelay(parseInt(e.target.value))}
           />
@@ -83,21 +83,21 @@ const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }: any) => {
       )}
       {on && (
         <QrReader
-          facingMode={facingMode}
+          facingMode={facingMode as VideoFacingModeEnum}
           ViewFinder={ViewFinder}
           onResult={(result, error) => {
             if (result) {
               setData(result);
             }
 
-            if (error !== 'NotFoundException') {
-              setError(error);
+            if (error) {
+              setError(error.message);
             }
           }}
         />
       )}
       <p>El valor escaneado es: {JSON.stringify(data, null, 2)}</p>
-      <p>El Error es: {JSON.stringify(error)}</p>
+      <p>El Error es: {error}</p>
     </div>
   );
 };
