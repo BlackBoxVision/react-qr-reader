@@ -31,7 +31,12 @@ export const useQrReader: UseQrReaderHook = ({
 
     if (
       Helpers.isValidType(facingMode, 'facingMode', 'string') &&
-      Helpers.isValidValue(facingMode, 'facingMode', ['user', 'environment'])
+      Helpers.isValidValue(facingMode, 'facingMode', [
+        'user',
+        'left',
+        'right',
+        'environment',
+      ])
     ) {
       // TODO: add support for passing additional props to constraints
       const constraints: MediaStreamConstraints = {
