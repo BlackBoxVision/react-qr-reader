@@ -1,61 +1,38 @@
-import { Device } from 'types';
+export const isMediaDevicesSupported = () => {
+  const isMediaDevicesSupported =
+    typeof navigator !== 'undefined' && !!navigator.mediaDevices;
 
-export const getDeviceId = async (
-  videoInputDevices: MediaDeviceInfo[],
-  facingMode: VideoFacingModeEnum
-): Promise<string> => {
-  const devices: Device[] = [];
-
-  for (let videoInputDevice of videoInputDevices) {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          deviceId: {
-            exact: videoInputDevice.deviceId,
-          },
-        },
-      });
-
-      if (!!stream) {
-        throw new Error('StreamNotFoundException');
-      }
-
-      const [track] = stream.getVideoTracks();
-
-      let settings: MediaTrackSettings = null;
-
-      if (!!track) {
-        settings = track.getSettings();
-        track.getCapabilities();
-
-        track.stop();
-      }
-
-      devices.push({
-        deviceId: videoInputDevice.deviceId,
-        facingMode: settings?.facingMode || facingMode,
-        hasStreamingSupport: true,
-      });
-    } catch (err) {
-      devices.push({
-        deviceId: videoInputDevice.deviceId,
-        facingMode: null,
-        hasStreamingSupport: false,
-      });
-    }
+  if (!isMediaDevicesSupported) {
+    console.warn(
+      `[ReactQrReader]: MediaDevices API has no support for your browser. You can fix this by running "npm i webrtc-adapter"`
+    );
   }
 
-  const [device] = devices.filter(
-    (device) => device.hasStreamingSupport && device.facingMode === facingMode
-  );
-
-  if (!device) {
-    throw new Error('No video input devices found');
-  }
-
-  return device.deviceId;
+  return isMediaDevicesSupported;
 };
 
-export const isMediaDevicesSupported = () => {
-  return typeof navigator !== 'undefined' && !!navigator.mediaDevices;
+export const isValidType = (value: any, name: string, type: string) => {
+  const isValid = typeof value === type;
+
+  if (!isValid) {
+    console.warn(
+      `[ReactQrReader]: Expected "${name}" to be a of type "${type}".`
+    );
+  }
+
+  return isValid;
+};
+
+export const isValidValue = (value: any, name: string, values: any[]) => {
+  const hasValue = values.find((v) => v === value);
+
+  if (!hasValue) {
+    console.warn(
+      `[ReactQrReader]: Expected "${name}" to have one of the following values: "${JSON.stringify(
+        values
+      )}".`
+    );
+  }
+
+  return hasValue;
 };

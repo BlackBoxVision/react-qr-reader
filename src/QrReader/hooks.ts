@@ -1,10 +1,11 @@
 import { MutableRefObject, useEffect, useRef } from 'react';
 import { BrowserQRCodeReader, IScannerControls } from '@zxing/browser';
 
-import { UseQrReaderHook, CodeReaderError } from '../types';
+import { UseQrReaderHook } from '../types';
 
-import * as BrowserHelpers from './utils';
+import * as Helpers from './utils';
 
+// TODO: add support for debug logs
 export const useQrReader: UseQrReaderHook = ({
   facingMode,
   scanDelay,
@@ -18,32 +19,40 @@ export const useQrReader: UseQrReaderHook = ({
       delayBetweenScanAttempts: scanDelay,
     });
 
-    if (!BrowserHelpers.isMediaDevicesSupported()) {
-      if (typeof onResult === 'function') {
-        onResult(null, 'NoMediaDevicesSupportException');
-      }
+    if (
+      !Helpers.isMediaDevicesSupported() &&
+      Helpers.isValidType(onResult, 'onResult', 'function')
+    ) {
+      const message =
+        'MediaDevices API has no support for your browser. You can fix this by running "npm i webrtc-adapter"';
+
+      onResult(null, new Error(message), codeReader);
     }
 
-    BrowserQRCodeReader.listVideoInputDevices()
-      .then((videoInputDevices: MediaDeviceInfo[]) =>
-        BrowserHelpers.getDeviceId(videoInputDevices, facingMode)
-      )
-      .then((deviceId: string) =>
-        codeReader.decodeFromVideoDevice(deviceId, videoId, (result, error) => {
-          const exception =
-            (error && (error.name as CodeReaderError)) || error.name;
+    if (
+      Helpers.isValidType(facingMode, 'facingMode', 'string') &&
+      Helpers.isValidValue(facingMode, 'facingMode', ['user', 'environment'])
+    ) {
+      // TODO: add support for passing additional props to constraints
+      const constraints: MediaStreamConstraints = {
+        video: {
+          facingMode,
+        },
+      };
 
-          if (typeof onResult === 'function') {
-            onResult(result, exception, codeReader);
+      codeReader
+        .decodeFromConstraints(constraints, videoId, (result, error) => {
+          if (Helpers.isValidType(onResult, 'onResult', 'function')) {
+            onResult(result, error, codeReader);
           }
         })
-      )
-      .then((controls: IScannerControls) => (controlsRef.current = controls))
-      .catch((err: Error) => {
-        if (typeof onResult === 'function') {
-          onResult(null, err, codeReader);
-        }
-      });
+        .then((controls: IScannerControls) => (controlsRef.current = controls))
+        .catch((error: Error) => {
+          if (Helpers.isValidType(onResult, 'onResult', 'function')) {
+            onResult(null, error, codeReader);
+          }
+        });
+    }
 
     return () => {
       controlsRef.current?.stop();

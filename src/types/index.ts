@@ -32,25 +32,15 @@ export type QrReaderProps = {
   videoId?: string;
 };
 
-export type CodeReaderError =
-  | 'FormatException'
-  | 'NotFoundException'
-  | 'ChecksumException'
-  | 'NoDeviceFoundException'
-  | 'NoMediaDevicesSupportException'
-  | string
-  | Error;
-
-export type UseQrReaderHook = (props: UseQrReaderHookProps) => void;
 export type OnResultFunction = (
   /**
    * The QR values extracted by Zxing
    */
-  result?: Result,
+  result?: Result | undefined | null,
   /**
    * The name of the exceptions thrown while reading the QR
    */
-  error?: CodeReaderError,
+  error?: Error | undefined | null,
   /**
    * The instance of the QR browser reader
    */
@@ -76,17 +66,4 @@ export type UseQrReaderHookProps = {
   videoId?: string;
 };
 
-export type Device = {
-  /**
-   * Property that represents the ID from video device
-   */
-  deviceId: string;
-  /**
-   * Property that represents which kind of camera is the device
-   */
-  facingMode: 'user' | 'environment' | string | null;
-  /**
-   * Property that represents if the camera supports streaming video
-   */
-  hasStreamingSupport: boolean;
-};
+export type UseQrReaderHook = (props: UseQrReaderHookProps) => void;
