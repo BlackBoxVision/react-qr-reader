@@ -1,113 +1,54 @@
 import React, { useState } from 'react';
+import { Story } from '@storybook/react';
+
+import { ViewFinder } from './ViewFinder';
 
 import { QrReader } from '../src';
+import { QrReaderProps } from '../src/types';
 
-export default {
-  title: 'QrReader',
+const styles = {
+  container: {
+    width: '400px',
+    margin: 'auto',
+  },
 };
 
-const ViewFinder = () => (
-  <>
-    <svg
-      width="50px"
-      viewBox="0 0 100 100"
-      style={{
-        top: 0,
-        left: 0,
-        zIndex: 1,
-        boxSizing: 'border-box',
-        border: '50px solid rgba(0, 0, 0, 0.3)',
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-      }}
-    >
-      <path
-        fill="none"
-        d="M13,0 L0,0 L0,13"
-        stroke="rgba(255, 0, 0, 0.5)"
-        strokeWidth="5"
-      />
-      <path
-        fill="none"
-        d="M0,87 L0,100 L13,100"
-        stroke="rgba(255, 0, 0, 0.5)"
-        strokeWidth="5"
-      />
-      <path
-        fill="none"
-        d="M87,100 L100,100 L100,87"
-        stroke="rgba(255, 0, 0, 0.5)"
-        strokeWidth="5"
-      />
-      <path
-        fill="none"
-        d="M100,13 L100,0 87,0"
-        stroke="rgba(255, 0, 0, 0.5)"
-        strokeWidth="5"
-      />
-    </svg>
-  </>
-);
-
-const QrReaderWrapper = ({ selectFacingMode, selectDelay, onAndOff }: any) => {
-  const [facingMode, setFacingMode] = useState('user');
-  const [delay, setDelay] = useState<number | boolean>(500);
+const Template: Story<QrReaderProps> = (args) => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
-  const [on, setOn] = useState(true);
 
   return (
-    <div style={{ width: '400px', margin: 'auto' }}>
-      {onAndOff && (
-        <button onClick={() => setOn(!on)}>
-          {on ? 'Turn off' : 'Turn on'}
-        </button>
-      )}
-      {selectFacingMode && (
-        <select onChange={(e) => setFacingMode(e.target.value)}>
-          <option value="user">User</option>
-          <option value="environment">Environment</option>
-        </select>
-      )}
-      {selectDelay && (
-        <div>
-          <button onClick={() => setDelay(false)}>Disable Delay</button>
-          <input
-            type="number"
-            value={delay as number}
-            placeholder="Delay in ms"
-            onChange={(e) => setDelay(parseInt(e.target.value))}
-          />
-        </div>
-      )}
-      {on && (
-        <QrReader
-          constraints={{
-            facingMode,
-          }}
-          ViewFinder={ViewFinder}
-          onResult={(result, error) => {
-            if (result) {
-              setData(result);
-            }
+    <div style={styles.container}>
+      <QrReader
+        {...args}
+        onResult={(result, error) => {
+          if (result) {
+            setData(result);
+          }
 
-            if (error) {
-              setError(error.message);
-            }
-          }}
-        />
-      )}
-      <p>El valor escaneado es: {JSON.stringify(data, null, 2)}</p>
-      <p>El Error es: {error}</p>
+          if (error) {
+            setError(error.message);
+          }
+        }}
+      />
+      <p>The value is: {JSON.stringify(data, null, 2)}</p>
+      <p>The error is: {error}</p>
     </div>
   );
 };
 
-export const ChooseFacingMode = () => <QrReaderWrapper selectFacingMode />;
+export const ScanCode = Template.bind({});
 
-export const ChooseDelay = () => <QrReaderWrapper selectDelay />;
+ScanCode.args = {
+  ViewFinder,
+  videoId: 'video',
+  scanDelay: 500,
+  constraints: {
+    facingMode: 'user',
+  },
+};
 
-export const FacingModeNotSpecified = () => <QrReaderWrapper />;
-
-export const OnAndOff = () => <QrReaderWrapper onAndOff />;
+export default {
+  title: 'Browser QR Reader',
+  component: QrReader,
+};

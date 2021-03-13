@@ -7,8 +7,8 @@ import { isMediaDevicesSupported, isValidType } from './utils';
 
 // TODO: add support for debug logs
 export const useQrReader: UseQrReaderHook = ({
+  scanDelay: delayBetweenScanAttempts,
   constraints: video,
-  scanDelay,
   onResult,
   videoId,
 }) => {
@@ -16,7 +16,7 @@ export const useQrReader: UseQrReaderHook = ({
 
   useEffect(() => {
     const codeReader = new BrowserQRCodeReader(null, {
-      delayBetweenScanAttempts: scanDelay,
+      delayBetweenScanAttempts,
     });
 
     if (

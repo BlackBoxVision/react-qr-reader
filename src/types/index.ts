@@ -7,17 +7,9 @@ export type QrReaderProps = {
    */
   constraints: MediaTrackConstraints;
   /**
-   * ClassName for the container element.
-   */
-  className?: string;
-  /**
    * Called when an error occurs.
    */
   onResult?: OnResultFunction;
-  /**
-   * Styling for the container element. Warning The preview will always keep its 1:1 aspect ratio.
-   */
-  style?: any;
   /**
    * Property that represents the view finder component
    */
