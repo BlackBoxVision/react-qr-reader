@@ -73,7 +73,7 @@
   },
   "peerDependencies": {
     "react": "~17 || ^16.8.0",
-    "react-dom": "~17",
+    "react-dom":  "~17 || ^16.8.0",
     "@zxing/library": "^0.17.1"
   },
   "@pika/pack": {
